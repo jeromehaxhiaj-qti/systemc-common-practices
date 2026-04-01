@@ -5,20 +5,7 @@ set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ standard to build all targets.")
 
 set(GITHUB "https://github.com/" CACHE STRING "github base url")
 
-include(FetchContent)
 include(CTest)
-
-FetchContent_Declare(
-  cpm-cmake
-  GIT_REPOSITORY ${GITHUB}cpm-cmake/CPM.cmake.git
-  GIT_SHALLOW True
-  GIT_TAG v0.31.1
-)
-
-FetchContent_MakeAvailable(cpm-cmake)
-include(${cpm-cmake_SOURCE_DIR}/cmake/CPM.cmake)
-
-cpmaddpackage("${GITHUB}TheLartians/PackageProject.cmake.git@1.4.1")
 
 cpmaddpackage(
   NAME SystemCLanguage
@@ -45,17 +32,12 @@ cpmaddpackage(
 )
 endif()
 
-FetchContent_Declare(
-    spdlog_git
-    GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
-    GIT_TAG        "v1.9.2"
-    GIT_SHALLOW    ON
-)
-FetchContent_Populate(spdlog_git)
-FetchContent_GetProperties(
-  spdlog_git
-  SOURCE_DIR spdlog_git_SRC_DIR
-  POPULATED spdlog_git_FOUND
+CPMAddPackage(
+  NAME spdlog
+  GIT_REPOSITORY ${GITHUB}gabime/spdlog.git
+  GIT_TAG v1.9.2
+  GIT_SHALLOW ON
+  DOWNLOAD_ONLY YES
 )
 
 add_library(${PROJECT_NAME} src/report.cpp)
@@ -70,7 +52,7 @@ if(TARGET fmt)
   target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt)
 endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${spdlog_git_SRC_DIR}/include)
+target_include_directories(${PROJECT_NAME} PRIVATE ${spdlog_SOURCE_DIR}/include)
 if(TARGET SystemC::cci)
   target_compile_definitions(${PROJECT_NAME} PRIVATE HAS_CCI)
   target_link_libraries(${PROJECT_NAME} PUBLIC SystemC::cci)

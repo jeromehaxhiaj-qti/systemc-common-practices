@@ -5,18 +5,15 @@ set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ standard to build all targets.")
 
 set(GITHUB "https://github.com/" CACHE STRING "github base url")
 
-include(FetchContent)
 include(CTest)
 
-FetchContent_Declare(
-  cpm-cmake
-  GIT_REPOSITORY ${GITHUB}cpm-cmake/CPM.cmake.git
-  GIT_SHALLOW True
-  GIT_TAG v0.31.1
+file(
+  DOWNLOAD
+  https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.42.1/CPM.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
+  EXPECTED_HASH SHA256=f3a6dcc6a04ce9e7f51a127307fa4f699fb2bade357a8eb4c5b45df76e1dc6a5
 )
-
-FetchContent_MakeAvailable(cpm-cmake)
-include(${cpm-cmake_SOURCE_DIR}/cmake/CPM.cmake)
+include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
 cpmaddpackage("${GITHUB}TheLartians/PackageProject.cmake.git@1.4.1")
 
